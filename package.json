@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@fontsource/figtree": "^5.2.10",
+    "@sentry/astro": "^10.22.0",
+    "@spotlightjs/astro": "^3.2.6",
     "@tailwindcss/vite": "^4.1.16",
     "astro": "^5.15.3",
     "tailwindcss": "^4.1.16"

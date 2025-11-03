@@ -1,6 +1,5 @@
 ---
-import "@fontsource/figtree/400.css";
-import "@fontsource/figtree/700.css";
+import { Font } from 'astro:assets';
 import '../styles/global.css';
 
 import BaseHead from '../components/Head.astro';
@@ -20,6 +19,8 @@ const { title, description } = Astro.props;
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
         <BaseHead title={title} description={description} />
+		
+		<Font cssVariable='--font-figtree' preload />
 	</head>
 	<body class="font-sans antialiased">
         <slot />
