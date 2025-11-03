@@ -1,0 +1,280 @@
+---
+interface Props {
+	variant?: 'default' | 'outline' | 'ghost';
+	size?: 'sm' | 'md' | 'lg';
+	successDuration?: number;
+	class?: string;
+	href?: string;
+	target?: string;
+	rel?: string;
+	particleDirection?: 'up' | 'down' | 'left' | 'right' | 'center';
+	particleColor?: 'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'rainbow';
+	particleSize?: number;
+}
+
+const {
+	variant = 'default',
+	size = 'md',
+	successDuration = 1000,
+	class: className = '',
+	href,
+	target,
+	rel,
+	particleDirection = 'up',
+	particleColor = 'default',
+	particleSize = 4
+} = Astro.props;
+
+const sizeClasses = {
+	sm: 'px-3 py-1.5 text-sm',
+	md: 'px-4 py-2 text-base',
+	lg: 'px-6 py-3 text-lg'
+};
+
+const variantClasses = {
+	default: 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200',
+	outline: 'border-2 border-black dark:border-white bg-transparent hover:bg-black/10 dark:hover:bg-white/10',
+	ghost: 'bg-transparent hover:bg-black/10 dark:hover:bg-white/10'
+};
+
+const baseClasses = `particle-button cursor-pointer relative inline-flex items-center justify-center gap-2 rounded-md font-medium transition-transform duration-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
+
+const Element = href ? 'a' : 'button';
+---
+
+{Element === 'a' ? (
+	<a
+		href={href}
+		target={target}
+		rel={rel}
+		class={baseClasses}
+		data-success-duration={successDuration}
+		data-particle-direction={particleDirection}
+		data-particle-color={particleColor}
+		data-particle-size={particleSize}
+	>
+		<slot />
+	</a>
+) : (
+	<button
+		class={baseClasses}
+		data-success-duration={successDuration}
+		data-particle-direction={particleDirection}
+		data-particle-color={particleColor}
+		data-particle-size={particleSize}
+	>
+		<slot />
+	</button>
+)}
+
+<style>
+	.particle-button.pressed {
+		transform: scale(0.95);
+	}
+</style>
+
+<script>
+	interface ParticleData {
+		element: HTMLDivElement;
+		timeout: number;
+	}
+
+	// Client-side interaction
+	function initParticleButtons() {
+		const buttons = document.querySelectorAll('.particle-button');
+
+		buttons.forEach((button) => {
+			if (!(button instanceof HTMLButtonElement || button instanceof HTMLAnchorElement)) return;
+
+			button.addEventListener('click', (e) => {
+				const target = e.currentTarget as HTMLButtonElement | HTMLAnchorElement;
+				const successDuration = parseInt(target.dataset.successDuration || '1000', 10);
+				const particleDirection = target.dataset.particleDirection || 'up';
+				const particleColor = target.dataset.particleColor || 'default';
+				const particleSize = parseInt(target.dataset.particleSize || '4', 10);
+
+				// Color theme mapping
+				const colorMap: Record<string, string> = {
+					default: document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000',
+					primary: '#3b82f6',   // blue
+					secondary: '#8b5cf6', // purple
+					success: '#10b981',   // green
+					danger: '#ef4444',    // red
+					warning: '#f59e0b'    // amber
+				};
+
+				// Rainbow colors for rainbow mode
+				const rainbowColors = ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'];
+
+				// For links, prevent default navigation - we'll handle it after animation
+				let href: string | null = null;
+				let targetAttr: string | null = null;
+				let relAttr: string | null = null;
+
+				if (target instanceof HTMLAnchorElement) {
+					e.preventDefault();
+					href = target.getAttribute('href');
+					targetAttr = target.getAttribute('target');
+					relAttr = target.getAttribute('rel');
+				}
+
+				// Dispatch custom event before animation - parent can listen for this
+				const beforeEvent = new CustomEvent('particleStart', {
+					detail: { element: target },
+					cancelable: true
+				});
+				const shouldContinue = target.dispatchEvent(beforeEvent);
+
+				if (!shouldContinue) return;
+
+				// Add pressed state
+				target.classList.add('pressed');
+
+				// Get click position (or center if not available)
+				const clickX = e instanceof MouseEvent && e.clientX ? e.clientX : 0;
+				const clickY = e instanceof MouseEvent && e.clientY ? e.clientY : 0;
+
+				// Fallback to button center if click position is not available
+				const rect = target.getBoundingClientRect();
+				const centerX = clickX || (rect.left + rect.width / 2);
+				const centerY = clickY || (rect.top + rect.height / 2);
+
+				// Create particles
+				const particles: ParticleData[] = [];
+				const particleCount = 6;
+
+				for (let i = 0; i < particleCount; i++) {
+					const particle = document.createElement('div');
+
+					let offsetX = 0;
+					let offsetY = 0;
+
+					switch (particleDirection) {
+						case 'up':
+							offsetX = (i % 2 ? 1 : -1) * (Math.random() * 50 + 20);
+							offsetY = -Math.random() * 50 - 20;
+							break;
+						case 'down':
+							offsetX = (i % 2 ? 1 : -1) * (Math.random() * 50 + 20);
+							offsetY = Math.random() * 50 + 20;
+							break;
+						case 'left':
+							offsetX = -Math.random() * 50 - 20;
+							offsetY = (i % 2 ? 1 : -1) * (Math.random() * 50 + 20);
+							break;
+						case 'right':
+							offsetX = Math.random() * 50 + 20;
+							offsetY = (i % 2 ? 1 : -1) * (Math.random() * 50 + 20);
+							break;
+						case 'center':
+							// Distribute particles in a circle around the button
+							const angle = (i / particleCount) * Math.PI * 2;
+							const distance = Math.random() * 30 + 40;
+							offsetX = Math.cos(angle) * distance;
+							offsetY = Math.sin(angle) * distance;
+							break;
+						default:
+							offsetX = (i % 2 ? 1 : -1) * (Math.random() * 50 + 20);
+							offsetY = -Math.random() * 50 - 20;
+					}
+
+					// Determine particle color
+					let color: string;
+					if (particleColor === 'rainbow') {
+						color = rainbowColors[i % rainbowColors.length];
+					} else {
+						color = colorMap[particleColor] || colorMap.default;
+					}
+
+					// Apply all styles inline to ensure they work with dynamically created elements
+					particle.style.position = 'fixed';
+					particle.style.left = `${centerX}px`;
+					particle.style.top = `${centerY}px`;
+					particle.style.width = `${particleSize}px`;
+					particle.style.height = `${particleSize}px`;
+					particle.style.opacity = '0';
+					particle.style.borderRadius = '50%';
+					particle.style.backgroundColor = color;
+					particle.style.pointerEvents = 'none';
+					particle.style.zIndex = '9999';
+					particle.style.setProperty('--offset-x', `${offsetX}px`);
+					particle.style.setProperty('--offset-y', `${offsetY}px`);
+
+					// Apply animation inline with delay
+					particle.style.animation = `particle-motion-${Date.now()}-${i} 0.6s ease-out forwards`;
+					particle.style.animationDelay = `${i * 0.1}s`;
+
+					// Create keyframes dynamically
+					const keyframes = `
+						@keyframes particle-motion-${Date.now()}-${i} {
+							0% {
+								transform: translate(0, 0) scale(0);
+								opacity: 0;
+							}
+							20% {
+								opacity: 1;
+							}
+							50% {
+								transform: translate(${offsetX}px, ${offsetY}px) scale(1);
+								opacity: 1;
+							}
+							100% {
+								transform: translate(${offsetX}px, ${offsetY}px) scale(0);
+								opacity: 0;
+							}
+						}
+					`;
+
+					const style = document.createElement('style');
+					style.textContent = keyframes;
+					document.head.appendChild(style);
+
+					document.body.appendChild(particle);
+
+					// Remove particle and style after animation
+					const timeout = window.setTimeout(() => {
+						particle.remove();
+						style.remove();
+					}, 600 + i * 100);
+
+					particles.push({ element: particle, timeout });
+				}
+
+				// Remove pressed state and handle click action after animation
+				setTimeout(() => {
+					target.classList.remove('pressed');
+
+					// Cleanup any remaining particles
+					particles.forEach(({ element, timeout }) => {
+						clearTimeout(timeout);
+						element.remove();
+					});
+
+					// Dispatch custom event for success callback
+					target.dispatchEvent(new CustomEvent('particleComplete', {
+						detail: { element: target }
+					}));
+
+					// Handle navigation after animation for links
+					if (href) {
+						if (targetAttr === '_blank') {
+							window.open(href, '_blank', relAttr || undefined);
+						} else {
+							window.location.href = href;
+						}
+					}
+				}, successDuration);
+			});
+		});
+	}
+
+	// Initialize on page load
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initParticleButtons);
+	} else {
+		initParticleButtons();
+	}
+
+	// Re-initialize after Astro view transitions
+	document.addEventListener('astro:page-load', initParticleButtons);
+</script>
