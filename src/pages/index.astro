@@ -1,14 +1,16 @@
 ---
 import SiteLayout from '../layouts/Layout.astro';
+import ParticleButton from '../components/ParticleButton.astro';
 
 const title = "Vivian Spencer - Personal Website";
 const description = "Welcome to the personal website of Vivian Spencer, showcasing projects, blog posts, and more.";
 ---
 
 <SiteLayout title={title} description={description}>
-	<main class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+	<main class="min-h-screen flex flex-col items-center justify-center px-4 text-center gap-6">
 		<h1 class="text-4xl font-bold mb-4">Welcome to Vivian Spencer's Website</h1>
 		<p class="text-lg mb-8">Explore my projects, blog posts, and more.</p>
-		<a href="/about" class="text-blue-600 hover:underline">Learn more about me</a>
+
+		<a href="/about" class="text-blue-600 hover:underline mt-8">Learn more about me</a>
 	</main>
 </SiteLayout>

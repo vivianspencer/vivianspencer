@@ -3,3 +3,16 @@
 @theme inline {
     --font-sans: var(--font-figtree);
 }
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+.dark {
+  color-scheme: dark;
+}
