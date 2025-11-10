@@ -1,6 +1,8 @@
 ---
+import  SchemaOrg from "./SchemaOrg.astro";
 const { title, description, ...props } = Astro.props;
 ---
+
 <title>{title}</title>
 <meta name="description" content={description} />
 
@@ -17,3 +19,5 @@ const { title, description, ...props } = Astro.props;
 <link rel="manifest" href="/site.webmanifest" />
 
 <meta name="robots" content="index,follow" />
+
+<SchemaOrg pageTitle={title} pageDescription={description} {...props} />

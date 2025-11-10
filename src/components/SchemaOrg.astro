@@ -1,0 +1,246 @@
+---
+/**
+ * Comprehensive JSON-LD Schema Component for Personal Website
+ * Provides structured data for search engines and social platforms
+ */
+
+interface Props {
+  type?: 'WebPage' | 'AboutPage' | 'ContactPage' | 'ProfilePage' | 'CollectionPage';
+  pageTitle?: string;
+  pageDescription?: string;
+  pageUrl?: string;
+  image?: string;
+  datePublished?: string;
+  dateModified?: string;
+  breadcrumbs?: Array<{ name: string; url: string }>;
+}
+
+const {
+  type = 'WebPage',
+  pageTitle,
+  pageDescription,
+  pageUrl,
+  image,
+  datePublished,
+  dateModified,
+  breadcrumbs
+} = Astro.props;
+
+const baseUrl = 'https://www.vivianspencer.co.uk';
+const currentUrl = pageUrl || Astro.url.pathname;
+const fullUrl = currentUrl.startsWith('http') ? currentUrl : `${baseUrl}${currentUrl}`;
+
+// Optimized skills list - single definition
+const technicalSkills = ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Vue.js', 'Svelte', 'SvelteKit', 'Node.js', 'PHP', 'Laravel', 'Symfony', 'Drupal', 'WordPress', 'AWS', 'Docker'].map(skill => ({
+  '@type': 'DefinedTerm',
+  name: skill,
+  inDefinedTermSet: 'https://schema.org/softwareApplication'
+}));
+
+// Use @graph for better organization and single context
+const schemaGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    // Person Schema - Main Entity
+    {
+      '@type': 'Person',
+      '@id': `${baseUrl}/#person`,
+      name: 'Vivian Spencer',
+      givenName: 'Vivian',
+      familyName: 'Spencer',
+      gender: 'male',
+      nationality: {
+        '@type': 'Country',
+        name: 'United Kingdom'
+      },
+      url: baseUrl,
+      image: {
+        '@type': 'ImageObject',
+        url: image || `${baseUrl}/images/profile.jpg`,
+        contentUrl: image || `${baseUrl}/images/profile.jpg`,
+      },
+      description: 'Fractional CTO, Full-Stack Developer, and Technical Leader specializing in web development, system architecture, and technical team leadership',
+
+      // Contact Information
+      email: 'mr@vivianspencer.co.uk',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        email: 'mr@vivianspencer.co.uk',
+        contactType: 'professional',
+        availableLanguage: ['English']
+      },
+
+      // Social Media Profiles
+      sameAs: [
+        'https://github.com/vivianspencer',
+        'https://linkedin.com/in/vivianspencer',
+        'https://x.com/vivianspencer',
+        'https://instagram.com/vivianspencer',
+      ],
+
+      // Professional Information
+      jobTitle: 'Technical Director',
+      hasOccupation: {
+        '@type': 'Occupation',
+        name: 'Technical Director',
+        occupationLocation: {
+          '@type': 'City',
+          name: 'Manchester',
+          containedInPlace: {
+            '@type': 'Country',
+            name: 'United Kingdom'
+          }
+        },
+        skills: 'Technical Leadership, Software Architecture, Full-Stack Development'
+      },
+      worksFor: {
+        '@type': 'Organization',
+        '@id': `${baseUrl}/#organization`,
+        name: 'By Inspiration',
+        url: 'https://byinspiration.co.uk'
+      },
+
+      // High-level expertise areas (strategic/conceptual)
+      knowsAbout: [
+        'Technical Leadership',
+        'CTO Advisory',
+        'System Architecture',
+        'Full-Stack Development',
+        'DevOps & CI/CD',
+        'Cloud Infrastructure',
+        'Agile & Team Management',
+        'Product Development'
+      ],
+
+      // Specific technical skills
+      skills: technicalSkills,
+
+      // Languages
+      knowsLanguage: [
+        { '@type': 'Language', name: 'English', alternateName: 'en-GB' }
+      ],
+
+      // Education
+      alumniOf: [
+        {
+          '@type': 'CollegeOrUniversity',
+          name: 'University of Birmingham'
+        },
+        {
+          '@type': 'CollegeOrUniversity',
+          name: 'Kingston University'
+        }
+      ],
+
+      // Location
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Manchester',
+        addressRegion: 'Lancashire',
+        addressCountry: 'GB'
+      },
+      homeLocation: {
+        '@type': 'City',
+        name: 'Manchester'
+      },
+    },
+
+    // Organization Schema
+    {
+      '@type': 'Organization',
+      '@id': `${baseUrl}/#organization`,
+      name: 'By Inspiration',
+      url: 'https://byinspiration.co.uk',
+      employee: {
+        '@id': `${baseUrl}/#person`
+      }
+    },
+
+    // Website Schema
+    {
+      '@type': 'WebSite',
+      '@id': `${baseUrl}/#website`,
+      url: baseUrl,
+      name: 'Vivian Spencer',
+      alternateName: 'Vivian Spencer - Technical Director',
+      description: 'Professional website of Vivian Spencer: Fractional CTO, Full-Stack Developer, and Technical Leader',
+      publisher: {
+        '@id': `${baseUrl}/#person`
+      },
+      inLanguage: 'en-GB',
+      copyrightYear: new Date().getFullYear(),
+      copyrightHolder: {
+        '@id': `${baseUrl}/#person`
+      }
+    },
+
+    // WebPage Schema
+    {
+      '@type': type,
+      '@id': `${fullUrl}#webpage`,
+      url: fullUrl,
+      name: pageTitle || 'Vivian Spencer - Technical Director',
+      description: pageDescription || 'Fractional CTO, Full-Stack Developer, and Technical Leader',
+      isPartOf: {
+        '@id': `${baseUrl}/#website`
+      },
+      about: {
+        '@id': `${baseUrl}/#person`
+      },
+      primaryImageOfPage: image ? {
+        '@type': 'ImageObject',
+        url: image.startsWith('http') ? image : `${baseUrl}${image}`,
+        contentUrl: image.startsWith('http') ? image : `${baseUrl}${image}`,
+      } : undefined,
+      datePublished: datePublished,
+      dateModified: dateModified || datePublished || new Date().toISOString(),
+      inLanguage: 'en-GB',
+      author: {
+        '@id': `${baseUrl}/#person`
+      },
+      creator: {
+        '@id': `${baseUrl}/#person`
+      },
+      publisher: {
+        '@id': `${baseUrl}/#person`
+      },
+    },
+
+    // Breadcrumb Schema (if breadcrumbs provided)
+    ...(breadcrumbs ? [{
+      '@type': 'BreadcrumbList',
+      '@id': `${fullUrl}#breadcrumb`,
+      itemListElement: breadcrumbs.map((crumb: { name: string; url: string }, index: number) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: crumb.name,
+        item: crumb.url.startsWith('http') ? crumb.url : `${baseUrl}${crumb.url}`
+      }))
+    }] : [])
+  ].filter(Boolean)
+};
+
+// Optimized cleanup function
+const cleanSchema = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map(cleanSchema).filter(v => v !== null && v !== undefined);
+  }
+  if (obj && typeof obj === 'object') {
+    const cleaned = Object.entries(obj)
+      .filter(([_, v]) => v !== undefined && v !== null && v !== '')
+      .reduce((acc, [k, v]) => {
+        const cleanedValue = cleanSchema(v);
+        if (cleanedValue !== null && cleanedValue !== undefined) {
+          acc[k] = cleanedValue;
+        }
+        return acc;
+      }, {} as any);
+    return Object.keys(cleaned).length > 0 ? cleaned : undefined;
+  }
+  return obj;
+};
+
+const cleanedSchema = cleanSchema(schemaGraph);
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(cleanedSchema)} />
