@@ -1,43 +1,55 @@
-# Astro Starter Kit: Minimal
+# Hi, I'm Vivian Spencer 👋
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Fractional CTO & Full-Stack Developer based in Manchester, UK.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+I help early-stage startups build products that work, and digital agencies build technical expertise in their space. With 15+ years of experience, I develop high-quality digital products, integrations, and solutions that help businesses succeed.
 
-## 🚀 Project Structure
+### What I Do
 
-Inside of your Astro project, you'll see the following folders and files:
+I run [By Inspiration](https://byinspiration.co.uk), where I provide fractional CTO services and full-stack development. Think of me as your technical co-founder on demand - strategy, architecture, hands-on coding, and everything in between.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+- **Fractional CTO Services** - Strategic technical leadership for early-stage startups
+- **Technical Consulting** - Architecture, code reviews, and technical strategy
+- **Product Development** - Building scalable, sustainable, maintainable digital products
+- **Team Development** - Mentoring developers and building technical capabilities
+- **Integration Solutions** - Connecting systems and building robust APIs
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Expertise
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- Full-stack development
+- Technical strategy and architecture
+- Team leadership and mentoring
+- Product development lifecycle
+- API design and integration
 
-Any static assets, like images, can be placed in the `public/` directory.
+### Tech Stack
 
-## 🧞 Commands
+**Frontend:** Vue, Svelte, React, Tailwind CSS, Astro  
+**Backend:** Node.js, PHP, Python, Go  
+**Frameworks:** Next.js, SvelteKit, Laravel, Symfony  
+**Infrastructure:** AWS, DigitalOcean, Krystal.co.uk  
+**Specialities:** Marketing automation, SEO technical implementation, sustainable web development
 
-All commands are run from the root of the project, from a terminal:
+### Currently Working On
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- Building modern, cost-effective alternatives to expensive platforms (Astro + Strapi migrations, that sort of thing)
+- Sustainable web development practices (green hosting, performance optimisation)
+- Helping agencies and startups build & scale
+- Property tech solutions
 
-## 👀 Want to learn more?
+### Let's Connect
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+I'm always interested in connecting with founders, technical leaders, and teams working on interesting problems.
+
+If you need someone who can:
+- Translate business goals into technical strategy
+- Actually build the thing (not just talk about it)
+- Scale your tech without breaking the bank
+- Give you honest advice, even when it's not what you want to hear
+
+Then let's chat: [vivianspencer.co.uk](https://vivianspencer.co.uk)
+
+---
+
+💚 *Committed to sustainable tech practices*
+🚗 *I drive electric*
